@@ -1,6 +1,31 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "iA Writer Duo S";
+  src: url("/fonts/iAWriterDuoS-Bold.woff2") format("woff2");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Sharp Grotesk Book";
+  src: url("/fonts/Sharp Grotesk Book 20 Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Sharp Grotesk Medium";
+  src: url("/fonts/Sharp Grotesk Medium 20 Regular.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
+  /* --- Colors --- */
   --color-purple-50: #faf7ff;
   --color-purple-100: #f6efff;
   --color-purple-200: #eedeff;
@@ -21,6 +46,37 @@
   --color-gray-600: #8c8c8c;
   --color-gray-700: #666666;
 
+  /* --- Fonts --- */
+  --font-sharp-book: "Sharp Grotesk Book", sans-serif;
+  --font-sharp-medium: "Sharp Grotesk Medium", sans-serif;
+  --font-mono-brand: "iA Writer Duo S", monospace;
+
+  /* --- Typography Scale (Figma: Size/Line-Height) --- */
+  --text-timecode: 64px;
+  --text-timecode--line-height: 64px;
+
+  --text-display: 20px;
+  --text-display--line-height: 30px;
+
+  --text-header: 16px;
+  --text-header--line-height: 24px;
+
+  --text-header-small: 14px;
+  --text-header-small--line-height: 21px;
+
+  --text-body: 16px;
+  --text-body--line-height: 24px;
+
+  --text-body-small: 14px;
+  --text-body-small--line-height: 21px;
+
+  --text-label: 16px;
+  --text-label--line-height: 24px;
+
+  --text-label-small: 14px;
+  --text-label-small--line-height: 21px;
+
+  /* --- Shadows --- */
   --shadow-tint-default: 0px 2px 4px 0px var(--color-purple-300);
   --shadow-tint-hover: 0px 4px 8px 0px var(--color-purple-300);
 

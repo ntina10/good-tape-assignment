@@ -1,15 +1,22 @@
+import { Button } from "./components/Button";
+
 export default function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="flex flex-col gap-6 p-10 bg-white rounded-2xl shadow-xl text-center max-w-sm">
-        {/* Testing a custom text color */}
-        <h1 className="text-2xl font-bold text-purple-900">Tailwind works</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="flex flex-col gap-6 p-12 border-2 border-dashed border-purple-400 rounded-3xl bg-white/50">
+        {/* Default, with tint */}
+        <Button tintShadow>Lorem ipsum</Button>
 
-        <p className="text-gray-600">This is text.</p>
+        {/* Default, no tint */}
+        <Button>Lorem ipsum</Button>
 
-        <button className="px-6 py-4 bg-purple-brand text-white font-semibold rounded-full shadow-tint-default hover:bg-purple-600 transition-colors">
-          Look at that shadow!
-        </button>
+        {/* Loading */}
+        <Button isLoading progress={60}>
+          Lorem ipsum
+        </Button>
+
+        {/* Disabled */}
+        <Button disabled>Lorem ipsum</Button>
       </div>
     </div>
   );
