@@ -5,13 +5,13 @@ export default function App() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="flex flex-col gap-6 p-12 border-2 border-dashed border-purple-400 rounded-3xl bg-white/50">
         {/* Default, with tint */}
-        <Button tintShadow>Lorem ipsum</Button>
+        <Button shadow="tint">Lorem ipsum</Button>
 
         {/* Default, no tint */}
-        <Button>Lorem ipsum</Button>
+        <Button>Clickable</Button>
 
         {/* Loading */}
-        <Button isLoading progress={60}>
+        <Button loading progress={60}>
           Lorem ipsum
         </Button>
 

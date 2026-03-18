@@ -9,6 +9,14 @@
 }
 
 @font-face {
+  font-family: "Space Mono";
+  src: url("/fonts/SpaceMono-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "Sharp Grotesk Book";
   src: url("/fonts/Sharp Grotesk Book 20 Regular.woff2") format("woff2");
   font-weight: 400;
@@ -49,7 +57,7 @@
   /* --- Fonts --- */
   --font-sharp-book: "Sharp Grotesk Book", sans-serif;
   --font-sharp-medium: "Sharp Grotesk Medium", sans-serif;
-  --font-mono-brand: "iA Writer Duo S", monospace;
+  --font-mono-brand: "Space Mono", monospace;
 
   /* --- Typography Scale (Figma: Size/Line-Height) --- */
   --text-timecode: 64px;

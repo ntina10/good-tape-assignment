@@ -5,22 +5,34 @@ import { cn } from "../utils/cn";
 
 // Define our variants using CVA
 const buttonVariants = cva(
-  "relative inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold text-xl transition-all duration-300 ease-out active:scale-[0.98] overflow-hidden",
+  "relative inline-flex w-fit shrink-0 items-center justify-center px-3 py-2 rounded-full font-sharp-medium text-label whitespace-nowrap transition-all duration-300 ease-out active:scale-[0.98] overflow-hidden",
   {
     variants: {
-      tintShadow: {
-        true: "shadow-tint-default hover:shadow-tint-hover",
-        false: "shadow-neutral-default hover:shadow-neutral-hover",
+      shadow: {
+        tint: "shadow-tint-default",
+        neutral: "shadow-neutral-default",
       },
-      // We extract the color logic into a specific variant
       status: {
         default: "bg-purple-700 text-purple-50",
+        loading: "text-purple-50 active:scale-100",
         disabled:
           "bg-purple-400 text-purple-600 cursor-not-allowed shadow-none hover:shadow-none active:scale-100",
       },
     },
+    compoundVariants: [
+      {
+        shadow: "tint",
+        status: "default",
+        className: "hover:shadow-tint-hover",
+      },
+      {
+        shadow: "neutral",
+        status: "default",
+        className: "hover:shadow-neutral-hover",
+      },
+    ],
     defaultVariants: {
-      tintShadow: false,
+      shadow: "neutral",
       status: "default",
     },
   },
@@ -32,7 +44,7 @@ export interface ButtonProps
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
-  isLoading?: boolean;
+  loading?: boolean;
   progress?: number;
 }
 
@@ -41,9 +53,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       className,
-      tintShadow,
+      shadow,
       asChild = false,
-      isLoading = false,
+      loading = false,
       progress = 80,
       disabled,
       children,
@@ -52,10 +64,14 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref,
   ) => {
     const Comp = asChild ? Slot : "button";
-    const isEffectivelyDisabled = disabled || isLoading;
-    const currentStatus = isEffectivelyDisabled ? "disabled" : "default";
+    const isEffectivelyDisabled = disabled || loading;
+    const currentStatus = disabled
+      ? "disabled"
+      : loading
+        ? "loading"
+        : "default";
 
-    const loadingStyle = isLoading
+    const loadingStyle = loading
       ? {
           background: `linear-gradient(to right, var(--color-purple-700) ${progress}%, var(--color-purple-400) ${progress}%)`,
           transition: "background 0.4s ease-in-out",
@@ -65,16 +81,16 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Comp
         className={cn(
-          buttonVariants({ tintShadow, status: currentStatus, className }),
+          buttonVariants({ shadow, status: currentStatus, className }),
         )}
         ref={ref}
         disabled={isEffectivelyDisabled}
         style={loadingStyle}
         {...props}
       >
-        {isLoading ? (
+        {loading ? (
           <span className="animate-pulse duration-700">
-            Loading... {progress}%
+            Loading... <span className="font-mono-brand">{progress}%</span>
           </span>
         ) : (
           children
