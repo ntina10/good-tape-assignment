@@ -89,8 +89,14 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {loading ? (
-          <span className="animate-pulse duration-700">
-            Loading... <span className="font-mono-brand">{progress}%</span>
+          <span className="inline-flex items-center gap-1 whitespace-nowrap animate-pulse duration-700">
+            <span>Loading...</span>
+            <span className="inline-grid min-w-[3ch] text-right font-mono-brand tabular-nums">
+              <span className="invisible col-start-1 row-start-1">99%</span>
+              <span className="col-start-1 row-start-1 text-right">
+                {progress}%
+              </span>
+            </span>
           </span>
         ) : (
           children
