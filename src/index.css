@@ -95,4 +95,29 @@
 :root {
   --text: #6b6375;
   --text-h: #08060d;
+  --page-background-base: #fcfbff;
+  --page-background-image:
+    radial-gradient(circle at top left, rgba(168, 82, 255, 0.18), transparent 42%),
+    radial-gradient(circle at top right, rgba(146, 37, 255, 0.12), transparent 38%);
+}
+
+body {
+  background: var(--page-background-base);
+}
+
+.page-shell {
+  position: relative;
+  min-height: 100vh;
+  isolation: isolate;
+}
+
+.page-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--page-background-base);
+  background-image: var(--page-background-image);
+  background-repeat: no-repeat;
 }

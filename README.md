@@ -1,73 +1,110 @@
-# React + TypeScript + Vite
+# Good Tape Frontend Assignment
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a React + TypeScript + Vite solution for the two-part frontend assignment.
 
-Currently, two official plugins are available:
+I approached it as:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Part 1: build a reusable `Button` component with a small, clear API and polished state transitions.
+- Part 2: build a simple Hacker News reader that reuses the same visual language and loading behavior.
 
-## React Compiler
+The goal was to keep the code easy to follow, with most logic split into small components, a dedicated data hook, and a small API service layer.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech stack
 
-## Expanding the ESLint configuration
+- React 19
+- TypeScript
+- Vite v8
+- React Router
+- Tailwind CSS v4
+- Class Variance Authority (`cva`) for button variants
+- Radix `Slot` for `asChild` support on the button
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## How to run
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Other useful scripts:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build
+npm run lint
+npm run preview
 ```
+
+## Where everything is
+
+- [`src/main.tsx`](/Users/konstantinafreri/Documents/goodtape-task/src/main.tsx): app bootstrap, router setup, global styles import
+- [`src/App.tsx`](/Users/konstantinafreri/Documents/goodtape-task/src/App.tsx): top-level routes
+- [`src/index.css`](/Users/konstantinafreri/Documents/goodtape-task/src/index.css): theme tokens, fonts, shadows, typography scale
+
+Part 1:
+
+- [`src/components/Button.tsx`](/Users/konstantinafreri/Documents/goodtape-task/src/components/Button.tsx): reusable button component
+- [`src/pages/HomePage.tsx`](/Users/konstantinafreri/Documents/goodtape-task/src/pages/HomePage.tsx): assignment/home page with the button examples, interactive preview, and loading/success demo flow
+
+Part 2:
+
+- [`src/pages/HackerNewsPage.tsx`](/Users/konstantinafreri/Documents/goodtape-task/src/pages/HackerNewsPage.tsx): Hacker News page shell
+- [`src/components/StoryList.tsx`](/Users/konstantinafreri/Documents/goodtape-task/src/components/StoryList.tsx): feed switching, loading states, load-more behavior
+- [`src/components/StoryCard.tsx`](/Users/konstantinafreri/Documents/goodtape-task/src/components/StoryCard.tsx): individual story UI and skeleton state
+- [`src/hooks/useTopStories.ts`](/Users/konstantinafreri/Documents/goodtape-task/src/hooks/useTopStories.ts): fetch orchestration, progress tracking, cancellation, state management
+- [`src/services/hn-api.ts`](/Users/konstantinafreri/Documents/goodtape-task/src/services/hn-api.ts): Hacker News API requests and story mapping
+- [`src/types/index.ts`](/Users/konstantinafreri/Documents/goodtape-task/src/types/index.ts): shared story types
+
+## Expected behavior
+
+On `/`:
+
+- You can preview the different button states shown in the assignment.
+- The playground lets you toggle hover, loading, disabled, and shadow style.
+- The main demo button runs through a loading sequence until it reaches 100%, then shows a success message and can be restarted.
+- The top-right icon button opens the Hacker News reader. On large screens it stays fixed, and on small screens it sits inline with the rest of the page content.
+
+On `/hacker-news`:
+
+- The app fetches stories from the Hacker News API.
+- You can switch between `Top`, `New`, and `Best`.
+- The page shows skeletons on initial load, a progress indicator while loading, and an error state if a request fails.
+- `Load more` fetches more visible stories in batches.
+- Each story card opens the article in a new tab, or falls back to the Hacker News item page if no external URL exists.
+
+## Button component
+
+The reusable button lives in [`src/components/Button.tsx`](/Users/konstantinafreri/Documents/goodtape-task/src/components/Button.tsx).
+
+Supported props:
+
+- `shadow="neutral" | "tint"`
+- `loading`
+- `progress`
+- `disabled`
+- `asChild`
+- standard button props like `onClick`, `type`, `className`
+
+Example:
+
+```tsx
+<Button shadow="tint" onClick={handleClick}>
+  Clickable
+</Button>
+
+<Button loading progress={80} shadow="tint">
+  Loading
+</Button>
+```
+
+When `loading` is true, the component disables interaction, shows a progress-based background fill, and displays the loading label with the percentage.
+
+## Finding the News feed
+
+- Open `/hacker-news` directly
+- Or start on `/` and use the top-right icon button
+
+## Notes on implementation
+
+- The button API is intentionally small so it is easy to reuse in other screens.
+- The Hacker News logic is separated from presentation: fetching lives in the hook/service layer, while rendering lives in `StoryList` and `StoryCard`.
+- Request cancellation is handled in the hook to avoid stale updates when switching feeds quickly.

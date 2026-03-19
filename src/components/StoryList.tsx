@@ -20,6 +20,7 @@ export function StoryList() {
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
   const { stories, totalCount, isLoading, loadingProgress, error } =
     useTopStories(activeFeed, visibleCount);
+  const isLoadingMore = isLoading && stories.length > 0;
   const hasMore = stories.length < totalCount;
 
   const handleFeedChange = (feed: HNStoryType) => {
@@ -110,13 +111,9 @@ export function StoryList() {
 
             {hasMore ? (
               <Button
-                loading={isLoading}
+                loading={isLoadingMore}
                 onClick={handleLoadMore}
-                progress={
-                  totalCount > 0
-                    ? Math.round((visibleCount / totalCount) * 100)
-                    : 0
-                }
+                progress={isLoadingMore ? loadingProgress : undefined}
                 shadow="neutral"
               >
                 Load more

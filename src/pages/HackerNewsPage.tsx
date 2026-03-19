@@ -4,7 +4,7 @@ import { StoryList } from "../components/StoryList";
 
 export function HackerNewsPage() {
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(168,82,255,0.18),transparent_42%),radial-gradient(circle_at_top_right,rgba(146,37,255,0.12),transparent_38%)] px-4 py-6 text-[color:var(--text-h)] sm:px-6 lg:px-10 lg:py-10">
+    <main className="page-shell px-4 py-6 text-[color:var(--text-h)] sm:px-6 lg:px-10 lg:py-10">
       <Link
         to="/"
         className="hidden lg:inline-flex lg:fixed lg:left-10 lg:top-10 lg:z-20 items-center gap-2 rounded-full border border-purple-200 bg-white/90 px-4 py-2 font-sharp-medium text-label text-purple-700 shadow-[0_12px_32px_rgba(109,86,146,0.16)] backdrop-blur transition-colors duration-200 hover:bg-purple-50"

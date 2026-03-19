@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../components/Button";
@@ -119,8 +119,26 @@ export function HomePage() {
   };
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(168,82,255,0.18),transparent_42%),radial-gradient(circle_at_top_right,rgba(146,37,255,0.12),transparent_38%)] px-4 py-6 text-[color:var(--text-h)] sm:px-6 lg:px-10 lg:py-10">
+    <main className="page-shell px-4 py-6 text-[color:var(--text-h)] sm:px-6 lg:px-10 lg:py-10">
+      <Link
+        to="/hacker-news"
+        aria-label="Open Hacker News page"
+        className="hidden lg:inline-flex lg:fixed lg:right-10 lg:top-10 lg:z-20 items-center justify-center rounded-full border border-purple-200 bg-white/90 p-3 text-purple-700 shadow-[0_12px_32px_rgba(109,86,146,0.16)] backdrop-blur transition-colors duration-200 hover:bg-purple-50"
+      >
+        <ArrowRight className="h-4 w-4" />
+      </Link>
+
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
+        <div className="flex justify-end lg:hidden">
+          <Link
+            to="/hacker-news"
+            aria-label="Open Hacker News page"
+            className="inline-flex items-center justify-center rounded-full border border-purple-200 bg-white/90 p-3 text-purple-700 shadow-sm transition-colors duration-200 hover:bg-purple-50"
+          >
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+
         <section className="relative overflow-hidden rounded-[32px] border border-white/70 bg-white/88 p-8 shadow-[0_24px_80px_rgba(109,86,146,0.12)] backdrop-blur">
           <div className="relative flex min-h-72 flex-col gap-8">
             <div className="max-w-2xl space-y-3">
@@ -281,14 +299,6 @@ export function HomePage() {
           </section>
         </div>
       </div>
-
-      <Link
-        to="/hacker-news"
-        aria-label="Open Hacker News page"
-        className="fixed bottom-6 right-6 z-40 inline-flex h-16 w-16 items-center justify-center rounded-full bg-purple-700 text-purple-50 shadow-[0_18px_40px_rgba(146,37,255,0.28)] transition-all duration-200 hover:-translate-y-1 hover:bg-purple-600 hover:shadow-[0_24px_48px_rgba(146,37,255,0.34)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-purple-200 sm:bottom-8 sm:right-8"
-      >
-        <ArrowUpRight className="h-6 w-6" />
-      </Link>
 
       {flowStage === "success" ? (
         <div className="pointer-events-none fixed inset-x-0 top-6 z-50 flex justify-center px-4">
