@@ -1,80 +1,183 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import type { HNStory, HNStoryType } from "../types";
-import { fetchStories } from "../services/hn-api";
+import { fetchStoryIds, fetchStoriesByIds } from "../services/hn-api";
 
 export const useTopStories = (
   storyType: HNStoryType = "top",
   limit: number = 10,
 ) => {
-  const [stories, setStories] = useState<HNStory[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [storyIds, setStoryIds] = useState<number[]>([]);
+  const [storiesById, setStoriesById] = useState<Record<number, HNStory | null>>(
+    {},
+  );
+  const [totalCount, setTotalCount] = useState(0);
+  const [isIdsLoading, setIsIdsLoading] = useState<boolean>(true);
+  const [isStoriesLoading, setIsStoriesLoading] = useState<boolean>(false);
   const [loadingProgress, setLoadingProgress] = useState<number | undefined>();
   const [error, setError] = useState<string | null>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
-  const requestIdRef = useRef(0);
+  const idsAbortControllerRef = useRef<AbortController | null>(null);
+  const storiesAbortControllerRef = useRef<AbortController | null>(null);
+  const idsRequestIdRef = useRef(0);
+  const storiesRequestIdRef = useRef(0);
 
-  const loadStories = useCallback(async (resetStories: boolean = false) => {
-    abortControllerRef.current?.abort();
+  const visibleIds = useMemo(
+    () => storyIds.slice(0, limit),
+    [storyIds, limit],
+  );
 
-    const controller = new AbortController();
-    abortControllerRef.current = controller;
-    const requestId = requestIdRef.current + 1;
-    requestIdRef.current = requestId;
+  const stories = useMemo(
+    () =>
+      visibleIds.flatMap((id) => {
+        const story = storiesById[id];
+        return story ? [story] : [];
+      }),
+    [storiesById, visibleIds],
+  );
 
-    setIsLoading(true);
-    setLoadingProgress(undefined);
-    setError(null);
-
-    if (resetStories) {
-      setStories([]);
-    }
-
-    try {
-      const data = await fetchStories(
-        storyType,
-        limit,
-        (progress) => {
-          if (controller.signal.aborted || requestId !== requestIdRef.current) {
-            return;
-          }
-
-          setLoadingProgress(progress);
-        },
-        controller.signal,
-      );
-
-      if (controller.signal.aborted || requestId !== requestIdRef.current) {
-        return;
-      }
-
-      setStories(data);
-    } catch (err) {
-      if (controller.signal.aborted || requestId !== requestIdRef.current) {
-        return;
-      }
-
-      setError(
-        err instanceof Error ? err.message : "An unknown error occurred",
-      );
-    } finally {
-      if (!controller.signal.aborted && requestId === requestIdRef.current) {
-        setIsLoading(false);
-        setLoadingProgress(undefined);
-      }
-    }
-  }, [limit, storyType]);
+  const missingVisibleIds = useMemo(
+    () =>
+      visibleIds.filter(
+        (id) => !Object.prototype.hasOwnProperty.call(storiesById, id),
+      ),
+    [storiesById, visibleIds],
+  );
 
   useEffect(() => {
-    void loadStories(true);
+    idsAbortControllerRef.current?.abort();
+    storiesAbortControllerRef.current?.abort();
+
+    const controller = new AbortController();
+    idsAbortControllerRef.current = controller;
+    const requestId = idsRequestIdRef.current + 1;
+    idsRequestIdRef.current = requestId;
+
+    setStoryIds([]);
+    setStoriesById({});
+    setTotalCount(0);
+    setError(null);
+    setLoadingProgress(undefined);
+    setIsIdsLoading(true);
+    setIsStoriesLoading(false);
+
+    void (async () => {
+      try {
+        const ids = await fetchStoryIds(storyType, controller.signal);
+
+        if (controller.signal.aborted || requestId !== idsRequestIdRef.current) {
+          return;
+        }
+
+        setStoryIds(ids);
+        setTotalCount(ids.length);
+      } catch (err) {
+        if (controller.signal.aborted || requestId !== idsRequestIdRef.current) {
+          return;
+        }
+
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred",
+        );
+      } finally {
+        if (!controller.signal.aborted && requestId === idsRequestIdRef.current) {
+          setIsIdsLoading(false);
+        }
+      }
+    })();
 
     return () => {
-      abortControllerRef.current?.abort();
+      controller.abort();
     };
-  }, [loadStories]);
+  }, [storyType]);
 
-  const refetch = useCallback(() => {
-    void loadStories();
-  }, [loadStories]);
+  useEffect(() => {
+    storiesAbortControllerRef.current?.abort();
 
-  return { stories, isLoading, loadingProgress, error, refetch };
+    if (missingVisibleIds.length === 0) {
+      setIsStoriesLoading(false);
+      setLoadingProgress(undefined);
+      return;
+    }
+
+    const controller = new AbortController();
+    storiesAbortControllerRef.current = controller;
+    const requestId = storiesRequestIdRef.current + 1;
+    storiesRequestIdRef.current = requestId;
+
+    setError(null);
+    setIsStoriesLoading(true);
+    setLoadingProgress(0);
+
+    void (async () => {
+      try {
+        const newStories = await fetchStoriesByIds(
+          missingVisibleIds,
+          (progress) => {
+            if (
+              controller.signal.aborted ||
+              requestId !== storiesRequestIdRef.current
+            ) {
+              return;
+            }
+
+            setLoadingProgress(progress);
+          },
+          controller.signal,
+        );
+
+        if (
+          controller.signal.aborted ||
+          requestId !== storiesRequestIdRef.current
+        ) {
+          return;
+        }
+
+        setStoriesById((currentStories) => {
+          let hasChanges = false;
+          const nextStories = { ...currentStories };
+
+          for (const [id, story] of Object.entries(newStories)) {
+            const storyId = Number(id);
+
+            if (nextStories[storyId] !== story) {
+              nextStories[storyId] = story;
+              hasChanges = true;
+            }
+          }
+
+          return hasChanges ? nextStories : currentStories;
+        });
+      } catch (err) {
+        if (
+          controller.signal.aborted ||
+          requestId !== storiesRequestIdRef.current
+        ) {
+          return;
+        }
+
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred",
+        );
+      } finally {
+        if (
+          !controller.signal.aborted &&
+          requestId === storiesRequestIdRef.current
+        ) {
+          setIsStoriesLoading(false);
+          setLoadingProgress(undefined);
+        }
+      }
+    })();
+
+    return () => {
+      controller.abort();
+    };
+  }, [missingVisibleIds]);
+
+  return {
+    stories,
+    totalCount,
+    isLoading: isIdsLoading || isStoriesLoading,
+    loadingProgress,
+    error,
+  };
 };

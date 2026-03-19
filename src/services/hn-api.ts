@@ -1,8 +1,6 @@
 import type { HNStory, HNStoryType } from "../types";
 
 const BASE_URL = "https://hacker-news.firebaseio.com/v0";
-const STORY_SCAN_MULTIPLIER = 3;
-const MIN_STORY_SCAN_COUNT = 30;
 const STORY_TYPE_PATHS: Record<HNStoryType, string> = {
   top: "topstories",
   new: "newstories",
@@ -21,6 +19,8 @@ type HNItemResponse = {
   deleted?: boolean;
   dead?: boolean;
 } | null;
+
+export type HNStoryLookup = Record<number, HNStory | null>;
 
 export const fetchStoryIds = async (
   storyType: HNStoryType,
@@ -64,27 +64,25 @@ const mapStory = (story: NonNullable<HNItemResponse>): HNStory => ({
   descendants: story.descendants ?? 0,
 });
 
-export const fetchStories = async (
-  storyType: HNStoryType,
-  limit: number = 10,
+export const fetchStoriesByIds = async (
+  ids: number[],
   onProgress?: (progress: number) => void,
   signal?: AbortSignal,
-): Promise<HNStory[]> => {
-  onProgress?.(0);
-  const ids = await fetchStoryIds(storyType, signal);
-  const idsToScan = ids.slice(
-    0,
-    Math.max(limit * STORY_SCAN_MULTIPLIER, MIN_STORY_SCAN_COUNT),
-  );
-  const totalRequests = idsToScan.length + 1;
-  let completedRequests = 1;
+): Promise<HNStoryLookup> => {
+  if (ids.length === 0) {
+    onProgress?.(100);
+    return {};
+  }
 
-  onProgress?.(Math.round((completedRequests / totalRequests) * 100));
+  onProgress?.(0);
+  let completedRequests = 0;
+  const totalRequests = ids.length;
 
   const stories = await Promise.all(
-    idsToScan.map(async (id) => {
+    ids.map(async (id) => {
       try {
-        return await fetchStory(id, signal);
+        const story = await fetchStory(id, signal);
+        return [id, story] as const;
       } finally {
         completedRequests += 1;
         onProgress?.(Math.round((completedRequests / totalRequests) * 100));
@@ -92,5 +90,7 @@ export const fetchStories = async (
     }),
   );
 
-  return stories.filter(isValidStory).slice(0, limit).map(mapStory);
+  return Object.fromEntries(
+    stories.map(([id, story]) => [id, isValidStory(story) ? mapStory(story) : null]),
+  );
 };
