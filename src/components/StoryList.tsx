@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTopStories } from "../hooks/useTopStories";
-import { StoryCard } from "./StoryCard";
+import { StoryCard, StoryCardSkeleton } from "./StoryCard";
 import { Button } from "./Button";
 import type { HNStoryType } from "../types";
 import { cn } from "../utils/cn";
@@ -41,40 +41,42 @@ export function StoryList() {
 
   return (
     <div className="mx-auto w-full space-y-6">
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div
-          aria-label="Story feeds"
-          className="inline-flex w-fit justify-self-start rounded-full border border-gray-200 bg-white/90 p-1 shadow-sm"
-          role="tablist"
-        >
-          {FEED_ORDER.map((feed) => {
-            const isActive = feed === activeFeed;
+      <div className="mb-8 flex justify-end">
+        <div className="flex w-full flex-wrap items-center justify-end gap-4">
+          <div className="min-h-[21px] text-right font-sharp-book text-body-small text-gray-500">
+            {isLoading && typeof loadingProgress === "number"
+              ? `${loadingProgress}%`
+              : null}
+          </div>
 
-            return (
-              <button
-                aria-selected={isActive}
-                className={cn(
-                  "rounded-full px-4 py-2 font-sharp-medium text-label-small transition duration-300",
-                  isActive
-                    ? "bg-gray-900 text-white shadow-sm"
-                    : "text-gray-500 hover:bg-gray-100 hover:text-gray-900",
-                )}
-                disabled={isLoading}
-                key={feed}
-                onClick={() => handleFeedChange(feed)}
-                role="tab"
-                type="button"
-              >
-                {FEED_LABELS[feed]}
-              </button>
-            );
-          })}
-        </div>
+          <div
+            aria-label="Story feeds"
+            className="inline-flex w-fit rounded-full border border-gray-200 bg-white/90 p-1 shadow-sm"
+            role="tablist"
+          >
+            {FEED_ORDER.map((feed) => {
+              const isActive = feed === activeFeed;
 
-        <div className="min-h-[21px] text-right font-sharp-book text-body-small text-gray-500">
-          {isLoading && typeof loadingProgress === "number"
-            ? `${loadingProgress}%`
-            : null}
+              return (
+                <button
+                  aria-selected={isActive}
+                  className={cn(
+                    "rounded-full px-4 py-2 font-sharp-medium text-label-small transition duration-300",
+                    isActive
+                      ? "bg-gray-900 text-white shadow-sm"
+                      : "text-gray-500 hover:bg-gray-100 hover:text-gray-900",
+                  )}
+                  disabled={isLoading}
+                  key={feed}
+                  onClick={() => handleFeedChange(feed)}
+                  role="tab"
+                  type="button"
+                >
+                  {FEED_LABELS[feed]}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -87,10 +89,7 @@ export function StoryList() {
       {isLoading && stories.length === 0 ? (
         <div className="space-y-4">
           {[...Array(5)].map((_, i) => (
-            <div
-              key={i}
-              className="h-24 animate-pulse rounded-2xl bg-gray-100"
-            />
+            <StoryCardSkeleton key={i} />
           ))}
         </div>
       ) : stories.length === 0 ? (

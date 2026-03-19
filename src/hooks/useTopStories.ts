@@ -41,6 +41,8 @@ export const useTopStories = (
       ),
     [storiesById, visibleIds],
   );
+  const hasPendingVisibleStories =
+    error === null && visibleIds.length > 0 && missingVisibleIds.length > 0;
 
   useEffect(() => {
     idsAbortControllerRef.current?.abort();
@@ -176,7 +178,7 @@ export const useTopStories = (
   return {
     stories,
     totalCount,
-    isLoading: isIdsLoading || isStoriesLoading,
+    isLoading: isIdsLoading || isStoriesLoading || hasPendingVisibleStories,
     loadingProgress,
     error,
   };
