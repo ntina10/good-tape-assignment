@@ -120,25 +120,7 @@ export function HomePage() {
 
   return (
     <main className="page-shell px-4 py-6 text-[color:var(--text-h)] sm:px-6 lg:px-10 lg:py-10">
-      <Link
-        to="/hacker-news"
-        aria-label="Open Hacker News page"
-        className="hidden lg:inline-flex lg:fixed lg:right-10 lg:top-10 lg:z-20 items-center justify-center rounded-full border border-purple-200 bg-white/90 p-3 text-purple-700 shadow-[0_12px_32px_rgba(109,86,146,0.16)] backdrop-blur transition-colors duration-200 hover:bg-purple-50"
-      >
-        <ArrowRight className="h-4 w-4" />
-      </Link>
-
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
-        <div className="flex justify-end lg:hidden">
-          <Link
-            to="/hacker-news"
-            aria-label="Open Hacker News page"
-            className="inline-flex items-center justify-center rounded-full border border-purple-200 bg-white/90 p-3 text-purple-700 shadow-sm transition-colors duration-200 hover:bg-purple-50"
-          >
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-
         <section className="relative overflow-hidden rounded-[32px] border border-white/70 bg-white/88 p-8 shadow-[0_24px_80px_rgba(109,86,146,0.12)] backdrop-blur">
           <div className="relative flex min-h-72 flex-col gap-8">
             <div className="max-w-2xl space-y-3">
@@ -297,6 +279,15 @@ export function HomePage() {
               </div>
             </div>
           </section>
+          <div className="flex justify-end lg:col-span-2 lg:col-start-2">
+            <Link
+              to="/hacker-news"
+              className="inline-flex items-center gap-2 rounded-full border border-purple-200 bg-white/90 px-4 py-2 font-sharp-medium text-label text-purple-700 shadow-sm transition-colors duration-200 hover:bg-purple-50"
+            >
+              Next
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
       </div>
 

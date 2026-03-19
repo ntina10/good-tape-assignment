@@ -105,6 +105,10 @@ body {
   background: var(--page-background-base);
 }
 
+button:not(:disabled) {
+  cursor: pointer;
+}
+
 .page-shell {
   position: relative;
   min-height: 100vh;

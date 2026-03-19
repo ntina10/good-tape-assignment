@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../utils/cn";
 
 const buttonVariants = cva(
-  "relative inline-flex w-fit shrink-0 items-center justify-center px-3 py-2 rounded-full font-sharp-medium text-label whitespace-nowrap transition-all duration-300 ease-out active:scale-[0.98] overflow-hidden",
+  "relative inline-flex w-fit shrink-0 items-center justify-center overflow-hidden rounded-full px-3 py-2 whitespace-nowrap font-sharp-medium text-label transition-all duration-300 ease-out active:scale-[0.98]",
   {
     variants: {
       shadow: {
@@ -12,8 +12,8 @@ const buttonVariants = cva(
         neutral: "shadow-neutral-default",
       },
       status: {
-        default: "bg-purple-700 text-purple-50",
-        loading: "bg-purple-700 text-purple-50 active:scale-100",
+        default: "cursor-pointer bg-purple-700 text-purple-50",
+        loading: "cursor-progress bg-purple-700 text-purple-50 active:scale-100",
         disabled:
           "bg-purple-400 text-purple-600 cursor-not-allowed shadow-none hover:shadow-none active:scale-100",
       },

@@ -7,7 +7,7 @@ export function HackerNewsPage() {
     <main className="page-shell px-4 py-6 text-[color:var(--text-h)] sm:px-6 lg:px-10 lg:py-10">
       <Link
         to="/"
-        className="hidden lg:inline-flex lg:fixed lg:left-10 lg:top-10 lg:z-20 items-center gap-2 rounded-full border border-purple-200 bg-white/90 px-4 py-2 font-sharp-medium text-label text-purple-700 shadow-[0_12px_32px_rgba(109,86,146,0.16)] backdrop-blur transition-colors duration-200 hover:bg-purple-50"
+        className="hidden lg:inline-flex lg:fixed lg:left-10 lg:top-10 lg:z-20 items-center gap-2 rounded-full border border-purple-300 bg-white/90 px-4 py-2 font-sharp-medium text-label text-purple-700 shadow-[0_12px_32px_rgba(109,86,146,0.16)] backdrop-blur transition-colors duration-200 hover:bg-purple-50"
       >
         <ArrowLeft className="h-4 w-4" />
         Back
@@ -17,7 +17,7 @@ export function HackerNewsPage() {
         <div className="flex items-center justify-between gap-4 lg:hidden">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 rounded-full border border-purple-200 bg-white/90 px-4 py-2 font-sharp-medium text-label text-purple-700 shadow-sm transition-colors duration-200 hover:bg-purple-50"
+            className="inline-flex items-center gap-2 rounded-full border border-purple-300 bg-white/90 px-4 py-2 font-sharp-medium text-label text-purple-700 shadow-sm transition-colors duration-200 hover:bg-purple-50"
           >
             <ArrowLeft className="h-4 w-4" />
             Back

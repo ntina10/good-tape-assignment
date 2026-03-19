@@ -1,8 +1,8 @@
 # Good Tape Frontend Assignment
 
-This project is a React + TypeScript + Vite solution for the two-part frontend assignment.
+by Konstantina Freri
 
-I approached it as:
+This project is a React + TypeScript + Vite solution for the two-part frontend assignment.
 
 - Part 1: build a reusable `Button` component with a small, clear API and polished state transitions.
 - Part 2: build a simple Hacker News reader that reuses the same visual language and loading behavior.
