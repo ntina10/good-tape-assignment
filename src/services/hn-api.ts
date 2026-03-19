@@ -1,8 +1,13 @@
-import type { HNStory } from "../types";
+import type { HNStory, HNStoryType } from "../types";
 
 const BASE_URL = "https://hacker-news.firebaseio.com/v0";
 const STORY_SCAN_MULTIPLIER = 3;
 const MIN_STORY_SCAN_COUNT = 30;
+const STORY_TYPE_PATHS: Record<HNStoryType, string> = {
+  top: "topstories",
+  new: "newstories",
+  best: "beststories",
+};
 
 type HNItemResponse = {
   id: number;
@@ -17,10 +22,14 @@ type HNItemResponse = {
   dead?: boolean;
 } | null;
 
-export const fetchTopStoryIds = async (
+export const fetchStoryIds = async (
+  storyType: HNStoryType,
   signal?: AbortSignal,
 ): Promise<number[]> => {
-  const response = await fetch(`${BASE_URL}/topstories.json`, { signal });
+  const response = await fetch(
+    `${BASE_URL}/${STORY_TYPE_PATHS[storyType]}.json`,
+    { signal },
+  );
   if (!response.ok) throw new Error("Failed to fetch story IDs");
   return response.json();
 };
@@ -55,13 +64,14 @@ const mapStory = (story: NonNullable<HNItemResponse>): HNStory => ({
   descendants: story.descendants ?? 0,
 });
 
-export const fetchTopStories = async (
+export const fetchStories = async (
+  storyType: HNStoryType,
   limit: number = 10,
   onProgress?: (progress: number) => void,
   signal?: AbortSignal,
 ): Promise<HNStory[]> => {
   onProgress?.(0);
-  const ids = await fetchTopStoryIds(signal);
+  const ids = await fetchStoryIds(storyType, signal);
   const idsToScan = ids.slice(
     0,
     Math.max(limit * STORY_SCAN_MULTIPLIER, MIN_STORY_SCAN_COUNT),

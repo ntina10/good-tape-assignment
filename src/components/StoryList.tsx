@@ -1,18 +1,57 @@
+import { useState } from "react";
 import { useTopStories } from "../hooks/useTopStories";
 import { StoryCard } from "./StoryCard";
 import { Button } from "./Button";
 import { RefreshCw } from "lucide-react";
+import type { HNStoryType } from "../types";
+import { cn } from "../utils/cn";
+
+const FEED_ORDER: HNStoryType[] = ["top", "new", "best"];
+
+const FEED_LABELS: Record<HNStoryType, string> = {
+  top: "Top",
+  new: "New",
+  best: "Best",
+};
 
 export function StoryList() {
-  const { stories, isLoading, loadingProgress, error, refetch } =
-    useTopStories(10);
+  const [activeFeed, setActiveFeed] = useState<HNStoryType>("top");
+  const { stories, isLoading, loadingProgress, error, refetch } = useTopStories(
+    activeFeed,
+    10,
+  );
 
   return (
     <div className="mx-auto w-full space-y-6">
-      <div className="mb-8 flex items-center justify-between gap-4">
-        <h2 className="font-sharp-medium text-[28px] leading-[34px] text-[color:var(--text-h)]">
-          Top Stories
-        </h2>
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div
+          aria-label="Story feeds"
+          className="inline-flex w-fit justify-self-start rounded-full border border-gray-200 bg-white/90 p-1 shadow-sm"
+          role="tablist"
+        >
+          {FEED_ORDER.map((feed) => {
+            const isActive = feed === activeFeed;
+
+            return (
+              <button
+                aria-selected={isActive}
+                className={cn(
+                  "rounded-full px-4 py-2 font-sharp-medium font-sharp-book transition duration-300",
+                  isActive
+                    ? "bg-gray-900 text-white shadow-sm"
+                    : "text-gray-500 hover:bg-gray-100 hover:text-gray-900",
+                )}
+                disabled={isLoading}
+                key={feed}
+                onClick={() => setActiveFeed(feed)}
+                role="tab"
+                type="button"
+              >
+                {FEED_LABELS[feed]}
+              </button>
+            );
+          })}
+        </div>
 
         <Button
           onClick={refetch}

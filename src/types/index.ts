@@ -7,3 +7,5 @@ export interface HNStory {
   time: number;
   descendants?: number; // Comment count
 }
+
+export type HNStoryType = "top" | "new" | "best";

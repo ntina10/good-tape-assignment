@@ -1,8 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import type { HNStory } from "../types";
-import { fetchTopStories } from "../services/hn-api";
+import type { HNStory, HNStoryType } from "../types";
+import { fetchStories } from "../services/hn-api";
 
-export const useTopStories = (limit: number = 10) => {
+export const useTopStories = (
+  storyType: HNStoryType = "top",
+  limit: number = 10,
+) => {
   const [stories, setStories] = useState<HNStory[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingProgress, setLoadingProgress] = useState<number | undefined>();
@@ -10,7 +13,7 @@ export const useTopStories = (limit: number = 10) => {
   const abortControllerRef = useRef<AbortController | null>(null);
   const requestIdRef = useRef(0);
 
-  const loadStories = useCallback(async () => {
+  const loadStories = useCallback(async (resetStories: boolean = false) => {
     abortControllerRef.current?.abort();
 
     const controller = new AbortController();
@@ -22,8 +25,13 @@ export const useTopStories = (limit: number = 10) => {
     setLoadingProgress(undefined);
     setError(null);
 
+    if (resetStories) {
+      setStories([]);
+    }
+
     try {
-      const data = await fetchTopStories(
+      const data = await fetchStories(
+        storyType,
         limit,
         (progress) => {
           if (controller.signal.aborted || requestId !== requestIdRef.current) {
@@ -54,15 +62,19 @@ export const useTopStories = (limit: number = 10) => {
         setLoadingProgress(undefined);
       }
     }
-  }, [limit]);
+  }, [limit, storyType]);
 
   useEffect(() => {
-    void loadStories();
+    void loadStories(true);
 
     return () => {
       abortControllerRef.current?.abort();
     };
   }, [loadStories]);
 
-  return { stories, isLoading, loadingProgress, error, refetch: loadStories };
+  const refetch = useCallback(() => {
+    void loadStories();
+  }, [loadStories]);
+
+  return { stories, isLoading, loadingProgress, error, refetch };
 };
