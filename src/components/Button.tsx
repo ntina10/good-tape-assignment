@@ -3,7 +3,6 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../utils/cn";
 
-// Define our variants using CVA
 const buttonVariants = cva(
   "relative inline-flex w-fit shrink-0 items-center justify-center px-3 py-2 rounded-full font-sharp-medium text-label whitespace-nowrap transition-all duration-300 ease-out active:scale-[0.98] overflow-hidden",
   {
@@ -38,7 +37,6 @@ const buttonVariants = cva(
   },
 );
 
-// Define Props
 export interface ButtonProps
   extends
     React.ButtonHTMLAttributes<HTMLButtonElement>,

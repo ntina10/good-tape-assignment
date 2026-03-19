@@ -1,5 +1,6 @@
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import { StoryList } from "../components/StoryList";
 
 export function HackerNewsPage() {
   return (
@@ -24,10 +25,14 @@ export function HackerNewsPage() {
               Hacker News
             </h1>
             <p className="max-w-2xl font-sharp-book text-body text-[color:var(--text)]">
-              This page is ready for the next step: bringing in stories from
-              the Hacker News API.
+              Browse top stories from the Hacker News API and open the ones you
+              want to read in full.
             </p>
           </div>
+        </section>
+
+        <section className="w-full">
+          <StoryList />
         </section>
       </div>
     </main>
