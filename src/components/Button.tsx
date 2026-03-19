@@ -13,7 +13,7 @@ const buttonVariants = cva(
       },
       status: {
         default: "bg-purple-700 text-purple-50",
-        loading: "text-purple-50 active:scale-100",
+        loading: "bg-purple-700 text-purple-50 active:scale-100",
         disabled:
           "bg-purple-400 text-purple-600 cursor-not-allowed shadow-none hover:shadow-none active:scale-100",
       },
@@ -54,7 +54,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       shadow,
       asChild = false,
       loading = false,
-      progress = 80,
+      progress,
       disabled,
       children,
       ...props
@@ -68,10 +68,14 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       : loading
         ? "loading"
         : "default";
+    const normalizedProgress =
+      typeof progress === "number"
+        ? Math.min(Math.max(Math.round(progress), 0), 100)
+        : undefined;
 
-    const loadingStyle = loading
+    const loadingStyle = loading && normalizedProgress !== undefined
       ? {
-          background: `linear-gradient(to right, var(--color-purple-700) ${progress}%, var(--color-purple-400) ${progress}%)`,
+          background: `linear-gradient(to right, var(--color-purple-700) ${normalizedProgress}%, var(--color-purple-400) ${normalizedProgress}%)`,
           transition: "background 0.4s ease-in-out",
         }
       : {};
@@ -89,12 +93,14 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {loading ? (
           <span className="inline-flex items-center gap-1 whitespace-nowrap animate-pulse duration-700">
             <span>Loading...</span>
-            <span className="inline-grid min-w-[3ch] text-right font-mono-brand tabular-nums">
-              <span className="invisible col-start-1 row-start-1">99%</span>
-              <span className="col-start-1 row-start-1 text-right">
-                {progress}%
+            {normalizedProgress !== undefined ? (
+              <span className="inline-grid min-w-[3ch] text-right font-mono-brand tabular-nums">
+                <span className="invisible col-start-1 row-start-1">99%</span>
+                <span className="col-start-1 row-start-1 text-right">
+                  {normalizedProgress}%
+                </span>
               </span>
-            </span>
+            ) : null}
           </span>
         ) : (
           children

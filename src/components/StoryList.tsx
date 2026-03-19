@@ -4,7 +4,8 @@ import { Button } from "./Button";
 import { RefreshCw } from "lucide-react";
 
 export function StoryList() {
-  const { stories, isLoading, error, refetch } = useTopStories(10);
+  const { stories, isLoading, loadingProgress, error, refetch } =
+    useTopStories(10);
 
   return (
     <div className="mx-auto w-full space-y-6">
@@ -16,6 +17,7 @@ export function StoryList() {
         <Button
           onClick={refetch}
           loading={isLoading}
+          progress={loadingProgress}
           className="flex items-center gap-2 !px-4 !py-2 !text-sm"
           shadow="tint"
         >

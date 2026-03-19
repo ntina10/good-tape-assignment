@@ -5,6 +5,7 @@ import { fetchTopStories } from "../services/hn-api";
 export const useTopStories = (limit: number = 10) => {
   const [stories, setStories] = useState<HNStory[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [loadingProgress, setLoadingProgress] = useState<number | undefined>();
   const [error, setError] = useState<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const requestIdRef = useRef(0);
@@ -18,10 +19,21 @@ export const useTopStories = (limit: number = 10) => {
     requestIdRef.current = requestId;
 
     setIsLoading(true);
+    setLoadingProgress(undefined);
     setError(null);
 
     try {
-      const data = await fetchTopStories(limit, controller.signal);
+      const data = await fetchTopStories(
+        limit,
+        (progress) => {
+          if (controller.signal.aborted || requestId !== requestIdRef.current) {
+            return;
+          }
+
+          setLoadingProgress(progress);
+        },
+        controller.signal,
+      );
 
       if (controller.signal.aborted || requestId !== requestIdRef.current) {
         return;
@@ -39,6 +51,7 @@ export const useTopStories = (limit: number = 10) => {
     } finally {
       if (!controller.signal.aborted && requestId === requestIdRef.current) {
         setIsLoading(false);
+        setLoadingProgress(undefined);
       }
     }
   }, [limit]);
@@ -51,5 +64,5 @@ export const useTopStories = (limit: number = 10) => {
     };
   }, [loadStories]);
 
-  return { stories, isLoading, error, refetch: loadStories };
+  return { stories, isLoading, loadingProgress, error, refetch: loadStories };
 };

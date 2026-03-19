@@ -57,16 +57,29 @@ const mapStory = (story: NonNullable<HNItemResponse>): HNStory => ({
 
 export const fetchTopStories = async (
   limit: number = 10,
+  onProgress?: (progress: number) => void,
   signal?: AbortSignal,
 ): Promise<HNStory[]> => {
+  onProgress?.(0);
   const ids = await fetchTopStoryIds(signal);
   const idsToScan = ids.slice(
     0,
     Math.max(limit * STORY_SCAN_MULTIPLIER, MIN_STORY_SCAN_COUNT),
   );
+  const totalRequests = idsToScan.length + 1;
+  let completedRequests = 1;
+
+  onProgress?.(Math.round((completedRequests / totalRequests) * 100));
 
   const stories = await Promise.all(
-    idsToScan.map((id) => fetchStory(id, signal)),
+    idsToScan.map(async (id) => {
+      try {
+        return await fetchStory(id, signal);
+      } finally {
+        completedRequests += 1;
+        onProgress?.(Math.round((completedRequests / totalRequests) * 100));
+      }
+    }),
   );
 
   return stories.filter(isValidStory).slice(0, limit).map(mapStory);
