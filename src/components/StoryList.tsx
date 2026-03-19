@@ -94,7 +94,7 @@ export function StoryList() {
           ))}
         </div>
       ) : stories.length === 0 ? (
-        <div className="rounded-2xl border border-gray-200 bg-white px-5 py-4 font-sharp-book text-body text-[color:var(--text)]">
+        <div className="rounded-2xl border border-gray-200 bg-white px-5 py-4 font-sharp-book text-body text-ink-muted">
           No stories are available right now.
         </div>
       ) : (

@@ -22,7 +22,7 @@ function ControlChip({ active, children, onClick }: ControlChipProps) {
         "rounded-full border px-4 py-2 text-label transition-all duration-200",
         active
           ? "border-purple-500 bg-purple-100 text-purple-700 shadow-sm"
-          : "border-gray-200 bg-white text-[color:var(--text)] hover:border-purple-300 hover:text-purple-700",
+          : "border-gray-200 bg-white text-ink-muted hover:border-purple-300 hover:text-purple-700",
       )}
     >
       {children}
@@ -46,7 +46,7 @@ function ToggleRow({ checked, label, onToggle }: ToggleRowProps) {
         "flex items-center justify-between rounded-3xl border px-4 py-3 text-left transition-all duration-200",
         checked
           ? "border-purple-500 bg-purple-100/80 text-purple-700"
-          : "border-gray-200 bg-white text-[color:var(--text)] hover:border-purple-300",
+          : "border-gray-200 bg-white text-ink-muted hover:border-purple-300",
       )}
     >
       <span className="font-sharp-medium text-label">{label}</span>
@@ -119,7 +119,7 @@ export function HomePage() {
   };
 
   return (
-    <main className="page-shell px-4 py-6 text-[color:var(--text-h)] sm:px-6 lg:px-10 lg:py-10">
+    <main className="page-shell px-4 py-6 text-ink sm:px-6 lg:px-10 lg:py-10">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
         <section className="relative overflow-hidden rounded-[32px] border border-white/70 bg-white/88 p-8 shadow-[0_24px_80px_rgba(109,86,146,0.12)] backdrop-blur">
           <div className="relative flex min-h-72 flex-col gap-8">
@@ -128,10 +128,10 @@ export function HomePage() {
                 Flow Demo
               </p>
               <div className="space-y-2">
-                <h1 className="font-sharp-medium text-display text-[color:var(--text-h)]">
+                <h1 className="font-sharp-medium text-display text-ink">
                   Button state progression
                 </h1>
-                <p className="font-sharp-book text-body text-[color:var(--text)]">
+                <p className="font-sharp-book text-body text-ink-muted">
                   Click once to move the button through loading and success.
                   When the toast appears, use it to reset the sequence.
                 </p>
@@ -166,10 +166,10 @@ export function HomePage() {
                   Assignment
                 </p>
                 <div>
-                  <h1 className="font-sharp-medium text-display text-[color:var(--text-h)]">
+                  <h1 className="font-sharp-medium text-display text-ink">
                     Button preview
                   </h1>
-                  <p className="font-sharp-book text-body text-[color:var(--text)]">
+                  <p className="font-sharp-book text-body text-ink-muted">
                     Check out the states.
                   </p>
                 </div>
@@ -198,10 +198,10 @@ export function HomePage() {
                     Playground
                   </p>
                   <div>
-                    <h1 className="font-sharp-medium text-display text-[color:var(--text-h)]">
+                    <h1 className="font-sharp-medium text-display text-ink">
                       Button preview
                     </h1>
-                    <p className="font-sharp-book text-body text-[color:var(--text)]">
+                    <p className="font-sharp-book text-body text-ink-muted">
                       Toggle the states and see how the button responds.
                     </p>
                   </div>
@@ -225,10 +225,10 @@ export function HomePage() {
                 <div className="h-full rounded-[28px] border border-gray-200/80 bg-[#fcfcfe] p-5">
                   <div className="space-y-4">
                     <div>
-                      <p className="font-sharp-medium text-header text-[color:var(--text-h)]">
+                      <p className="font-sharp-medium text-header text-ink">
                         Controls
                       </p>
-                      <p className="font-sharp-book text-body-small text-[color:var(--text)]">
+                      <p className="font-sharp-book text-body-small text-ink-muted">
                         Hover only affects the preview when the button is
                         neither loading nor disabled. Disabled is only applied
                         when loading is off.
@@ -237,7 +237,7 @@ export function HomePage() {
 
                     <div className="flex flex-col gap-3 rounded-3xl border border-gray-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
                       <div>
-                        <p className="font-sharp-medium text-label text-[color:var(--text-h)]">
+                        <p className="font-sharp-medium text-label text-ink">
                           Shadow
                         </p>
                       </div>
@@ -299,7 +299,7 @@ export function HomePage() {
                 <p className="font-sharp-medium text-header text-purple-700">
                   Success
                 </p>
-                <p className="font-sharp-book text-body text-[color:var(--text)]">
+                <p className="font-sharp-book text-body text-ink-muted">
                   The loading flow reached 100%. The main button is now disabled
                   until you restart it.
                 </p>
